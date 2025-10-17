@@ -54,12 +54,67 @@ Now where can api route come into play, when you want to do things that have to 
             { status: 500 }
         );
     }
+    ```
+# 10. STEPS TO SET UP AN EXPRESS SERVER
+1. Crete an index.js file (this is going to be the entry point of your application)
+2. Then run `npm init -y` to create a package.json file
+3. Then run `npm install express` to install express.
+4. Then set the type to "module" in package.json file
+5. Then in the index.js file, write the following code:
+```js
+import express from 'express';
 
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.use(express.json());
+
+app.get('/', (req, res) => {
+    res.send('Hello World!');
+});
+
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
 ```
+<b>To create an express server in typescript, check this chatgpt prompt here: https://chatgpt.com/g/g-p-68eea67c116c8191a9e11a0fdfb76aaa-set-ups/c/68eea6e0-1494-8327-b7f9-bf0f38cbd901</b>
 
+
+
+# 11. What is the supabase service role key and the supabase publishable key
+    Supabase utilizes different API keys for various access levels and security considerations. While "service role key" and "publishable key" are the current recommended terms, you might also encounter "anon key" and "secret key" as older, but still functional, equivalents.
+    1. Supabase Publishable Key (formerly Anon Key):
+        This key is designed for client-side applications (e.g., web browsers, mobile apps).
+        It provides public access to your Supabase project's API.
+        It respects Row Level Security (RLS) policies, meaning that a user's access to data is restricted based on the policies you define in your database.
+        It is safe to embed in your client-side code because it relies on RLS for data protection.
+    2. Supabase Service Role Key (formerly Secret Key):
+        This key is intended for server-side applications and backend operations (e.g., API routes, serverless functions, background jobs).
+        It provides elevated privileges and bypasses Row Level Security (RLS).
+        This means it can access and modify all data in your database, regardless of RLS policies.
+        It is crucial to keep this key secret and never expose it in client-side code or public repositories. Treat it as a sensitive environment variable.
+    In summary:
+    Use the Publishable Key (or Anon Key) for operations in your client-side applications where RLS protects your data.
+    Use the Service Role Key (or Secret Key) for server-side operations requiring full access to your database, and ensure it remains strictly confidential.
+
+# 12. In Express, what’s the NextResponse.json(...) equivalent?
+- Check explanation here: https://chatgpt.com/g/g-p-68ac2923bcb081918f853596b455f140/c/68ac2a31-60ec-8322-96fa-9b3e700c7fff (search for: "In Express, what’s the NextResponse.json(...) equivalent?" ) - in creanr project, under the chat "Explain TS/JS concepts..."
+
+# 13. When to use try/catch vs simple if (error) checks
+- Check explanation here: https://chatgpt.com/g/g-p-68ac2923bcb081918f853596b455f140/c/68ac2a31-60ec-8322-96fa-9b3e700c7fff (search for: "When to use try/catch vs simple if (error) checks" ) - in creanr project, under the chat "Explain TS/JS concepts..."
+
+# 14. Why people use !!value (double-bang) in JS/TS
+- Check explanation here: https://chatgpt.com/g/g-p-68ac2923bcb081918f853596b455f140/c/68ac2a31-60ec-8322-96fa-9b3e700c7fff (search for: "Why people use !!value (double-bang) in JS/TS" ) - in creanr project, under the chat "Explain TS/JS concepts..."
+
+# 15. Difference between Services and Controllers in an express web folder structure.
+- Check explanation here: https://chatgpt.com/g/g-p-68ac2923bcb081918f853596b455f140/c/68ed969a-7a54-8325-bf62-0a290461a71b (search for: "what is “polling”? (the guard walking back and forth)" ) - in creanr project, under the chat "Building Telegram Bot in js..."
+
+# 16. Understanding polling and graceful stop in express server
+- Check explanation here: https://chatgpt.com/g/g-p-68eea67c116c8191a9e11a0fdfb76aaa-set-ups/c/68eea6e0-1494-8327-b7f9-bf0f38cbd901 (search for: "Implement a polling mechanism that checks for new tasks every X seconds" ) - in set ups project.
 
 # LINES I CAN USE
 - // return NextResponse.json({message: "Not implemented"}, {status: 501});
+- const { launchBotDev } = await import("./bot/bot.js");
 
 # THINGS TO LEARN
 - How does refresh token and access token work
