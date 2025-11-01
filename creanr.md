@@ -138,13 +138,118 @@ app.listen(PORT, () => {
     To make two columns unique for every row in a Supabase table, you need to add a unique constraint that spans both columns. This is often referred to as a composite unique constraint.
     Here's how to do it using SQL in the Supabase SQL Editor:
     Execute the ALTER TABLE statement: Use the following SQL command, replacing your_table_name, column_name_1, and column_name_2 with your actual table and column names:
+
 ```sql
     ALTER TABLE your_table_name
     ADD CONSTRAINT unique_columns_constraint UNIQUE (column_name_1, column_name_2);
 ```
+
 - your_table_name: The name of the table you want to modify.
 - unique_columns_constraint: A descriptive name for your unique constraint.
 - column_name_1, column_name_2: The names of the two columns that, when combined, must be unique for each row.
+
+# 18. Zod Error formatter function
+
+When you validate data with Zod (e.g. CreateSchema.safeParse(body)), and it fails, Zod gives you a ZodError — a big object that tells you which field failed and why.
+
+```ts
+import { ZodError } from "zod";
+
+export function formatZodError(error: ZodError) {
+  const fieldErrors: Record<string, string[]> = {};
+
+  for (const issue of error.issues) {
+    const path = issue.path.join(".") || "_root";
+
+    (fieldErrors[path] ??= []).push(issue.message);
+  }
+
+  return { fieldErrors };
+}
+```
+
+- Check explanation here: https://chatgpt.com/g/g-p-68ac2923bcb081918f853596b455f140-creanr/c/68c810b1-f258-832f-a16a-7ff1b33d5e2f (search for: "first, the file goal (so you don’t get lost)" ) - in creanr project, under the chat "API".
+
+# 19. Understanding Webhooks vs Callback URLs
+
+- Check explanation here: https://chatgpt.com/c/68f8d47c-f6c4-832b-b9d9-cd4efba13119 (search for: "Step 2: Webhook — simple definition" ) - in creanr project, under the chat "Flutterwave integration confirmation"
+
+# 20. Understanding RPC (Remote Procedure Call), Database transactions, and multi-statement transactions
+
+- Check explanation here: https://chatgpt.com/g/g-p-68ac2923bcb081918f853596b455f140-creanr/c/68c810b1-f258-832f-a16a-7ff1b33d5e2f (search for: "What is a database transaction?" ) - in creanr project, under the chat "API"
+
+# NEW CODE SYNTAX I LEARNT
+
+## 1. Writing RPC functions in supabase (Understanding the hold_money_for_payout function)
+
+- Check explanation here: https://chatgpt.com/g/g-p-68ac2923bcb081918f853596b455f140-creanr/c/68c810b1-f258-832f-a16a-7ff1b33d5e2f (search for: "First, here’s the version with your name change" ) - in creanr project, under the chat "API"
+
+```sql
+  create or replace function hold_money_for_payout(
+  p_payout jsonb,           -- everything needed to insert the payout row
+  p_wallet_id uuid,
+  p_amount_usd numeric,
+  p_narrative
+) returns uuid
+language plpgsql
+as $$
+declare
+  v_payout_id uuid;
+begin
+  -- 1) create payout (status = 'pending')
+  insert into payouts (
+    community_id, wallet_id, payout_account_id,
+    request_amount_usd, destination_currency_code,
+    fx_rate_usd_to_destination, destination_amount,
+    platform_fee_usd, provider_fee_usd, provider,
+    provider_payout_id, idempotency_key, status,
+    failure_reason, user_id
+  )
+  values (
+    (p_payout->>'community_id')::uuid,
+    (p_payout->>'wallet_id')::uuid,
+    (p_payout->>'payout_account_id')::uuid,
+    (p_payout->>'request_amount_usd')::numeric,
+    p_payout->>'destination_currency_code',
+    (p_payout->>'fx_rate_usd_to_destination')::numeric,
+    (p_payout->>'destination_amount')::numeric,
+    coalesce((p_payout->>'platform_fee_usd')::numeric, 0),
+    coalesce((p_payout->>'provider_fee_usd')::numeric, 0),
+    p_payout->>'provider',
+    null,
+    p_payout->>'idempotency_key',
+    'pending',
+    null,
+    (p_payout->>'user_id')::uuid
+  )
+  returning id into v_payout_id;
+
+  -- 2) ledger: put money on hold
+  insert into wallet_ledger (wallet_id, entry_type, amount_usd, narrative)
+  values (p_wallet_id, 'hold', p_amount_usd, p_narrative);
+
+  -- 3) wallet: move money available → pending
+  update wallets
+  set available_amount = available_amount - p_amount_usd,
+      pending_amount   = pending_amount   + p_amount_usd
+  where id = p_wallet_id;
+
+  return v_payout_id;
+end
+$$;
+
+```
+
+This is how to use it in your code:
+
+```ts
+const payoutIdResult = await supabase.rpc("hold_money_for_payout", {
+        p_payout: payoutRecord,
+        p_wallet_id: walletData.id as string,
+        p_ammount_usd: amount,
+        p_narrative: generateNarrativeForWalletLedgerEntryForPayout('hold', idempotency_key),
+    })
+```
 
 # LINES I CAN USE
 
