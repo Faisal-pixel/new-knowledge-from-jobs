@@ -178,6 +178,11 @@ export function formatZodError(error: ZodError) {
 
 - Check explanation here: https://chatgpt.com/g/g-p-68ac2923bcb081918f853596b455f140-creanr/c/68c810b1-f258-832f-a16a-7ff1b33d5e2f (search for: "What is a database transaction?" ) - in creanr project, under the chat "API"
 
+# 21. What is Cron? And Setting up cron jobs using node-cron in a Node.js application
+
+- Check explanation here: https://chatgpt.com/g/g-p-68ac2923bcb081918f853596b455f140-creanr/c/68f39b28-5cc8-8327-bdc9-c641f2161e44 (search for: "What is a Cron (like I’m telling a 5-year-old)" ) - in creanr project, under the chat "Telegram bot buttons setup"
+- To understand how it works when it deployed to a server, search for: First — how node-cron actually works
+
 # NEW CODE SYNTAX I LEARNT
 
 ## 1. Writing RPC functions in supabase (Understanding the hold_money_for_payout function)
@@ -244,17 +249,23 @@ This is how to use it in your code:
 
 ```ts
 const payoutIdResult = await supabase.rpc("hold_money_for_payout", {
-        p_payout: payoutRecord,
-        p_wallet_id: walletData.id as string,
-        p_ammount_usd: amount,
-        p_narrative: generateNarrativeForWalletLedgerEntryForPayout('hold', idempotency_key),
-    })
+  p_payout: payoutRecord,
+  p_wallet_id: walletData.id as string,
+  p_ammount_usd: amount,
+  p_narrative: generateNarrativeForWalletLedgerEntryForPayout(
+    "hold",
+    idempotency_key
+  ),
+});
 ```
 
 # LINES I CAN USE
 
 - // return NextResponse.json({message: "Not implemented"}, {status: 501});
 - const { launchBotDev } = await import("./bot/bot.js");
+- const { calculateTransferFee } = await import(
+  "@/lib/server/flutterwave/v3/transfer-fee-calculator"
+  );
 
 # THINGS TO LEARN
 
