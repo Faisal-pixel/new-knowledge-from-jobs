@@ -183,6 +183,54 @@ export function formatZodError(error: ZodError) {
 - Check explanation here: https://chatgpt.com/g/g-p-68ac2923bcb081918f853596b455f140-creanr/c/68f39b28-5cc8-8327-bdc9-c641f2161e44 (search for: "What is a Cron (like I’m telling a 5-year-old)" ) - in creanr project, under the chat "Telegram bot buttons setup"
 - To understand how it works when it deployed to a server, search for: First — how node-cron actually works
 
+# 22. Difference between gross fee and net fee
+The difference is that a gross fee is the total amount before any deductions, while a net fee is the amount remaining after all applicable deductions like taxes, discounts, and other charges have been subtracted. Think of the gross fee as the full price or list price, and the net fee as the final, "in-your-pocket" amount after all costs are accounted for.
+
+# 23. How to add a script tag to a nextjs app router project
+- So I just created a layout.tsx file in the same path as the page where I wanted to add the script tag. Then in the layout.tsx file, I added the script tag like this:
+
+strategy can have two values:
+- beforeInteractive: This strategy loads the script before the page becomes interactive. It's useful for scripts that need to be available as soon as possible, such as those that modify the initial rendering of the page.
+- afterInteractive: This strategy loads the script after the page has become interactive. It's suitable for scripts that enhance user interactions or add functionality that doesn't need to be available immediately.
+
+```tsx
+// app/dashboard/layout.tsx
+import Script from "next/script";
+
+export default function MiniAppsLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <>
+      {children}
+      {/* This script will only load when a route within /dashboard is accessed */}
+      <Script
+        src="https://telegram.org/js/telegram-web-app.js?59"
+        strategy="beforeInteractive"
+      />
+    </>
+  );
+}
+```
+
+# 24. Understand what 'mime' is in regards files, images, and videos...
+In simple terms, a MIME type is like a secret code name for a file. 
+Imagine all the files on the internet are toys in a giant toy box. When you want to play with a toy (open a file), your computer needs to know what kind it is (a picture, a song, a video, a document). The MIME type is a special label or tag that tells your computer exactly what the file is so it knows how to use it. 
+
+Here is how it works:
+- The Mail Carrier (the internet/web server): The mail carrier needs to know what's in the box so it can deliver it correctly. The MIME type is a message on the box that says, "This is a picture!" or "This is a song!"
+- The Toy (the file):
+ 1. A picture has a MIME type like image/jpeg. The "image" part is the big family, and "jpeg" is the specific kind of picture
+ 2. A picture has a MIME type like image/jpeg. The "image" part is the big family, and "jpeg" is the specific kind of picture
+ 3. A regular text story has a MIME type like text/plain.
+- You (your computer/browser): When you get the toy, you read the label.
+    If it says image/jpeg, you know to open it with your picture-viewing program.
+    If it says video/mp4, you know to open it with your video player. 
+Before this secret code (MIME) existed, computers could only send plain text messages, like a note written on a simple piece of paper. MIME makes it possible to send all the fun stuff like pictures, videos, and music over the internet and in emails! 
+
+
 # NEW CODE SYNTAX I LEARNT
 
 ## 1. Writing RPC functions in supabase (Understanding the hold_money_for_payout function)
@@ -272,3 +320,7 @@ const payoutIdResult = await supabase.rpc("hold_money_for_payout", {
 - How does refresh token and access token work
 - const frames = (await import('@/helpers/graph-helpers/build-frames.helpers')).default(startISO, endISO, bucket); - understand this dynamic import
 - Understand the code for dashboard graph route
+
+
+# QUESTIONS
+1. Why dont nextjs apps have an index.html file?
